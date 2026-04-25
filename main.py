@@ -1,15 +1,17 @@
 import nest_asyncio
+import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
 
-# تفعيل التزامن ليعمل البوت على السيرفرات السحابية
+# هذا السطر مهم جداً ليعمل الكود على السيرفرات الخارجية مثل Render
 nest_asyncio.apply()
 
-# --- تنبيه: ضع التوكن الخاص بك بين العلامات " " في السطر التالي ---
-TOKEN =8249232952:AAHOd-k4P270nODrIwIcGq8fGb6C2L6dQY4
+# --- ضع التوكن الخاص بك بين العلامات " " في السطر التالي ---
+TOKEN =8249232952:AAEKRhu4DkN-RgThncPkDiR6SdrmvsxhomI
 
+# دالة الترحيب التي تظهر عند كتابة /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # إنشاء أزرار اختيار اللغة
+    # إنشاء أزرار اختيار اللغة (تظهر تحت الرسالة)
     keyboard = [
         [
             InlineKeyboardButton("🇸🇦 العربية", callback_data="ar"),
@@ -18,29 +20,32 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
-    # رسالة الترحيب
+    # إرسال الرسالة للمستخدم
     await update.message.reply_text(
         "مرحباً بك في دليل الحج والعمرة 🕋\nاختر لغتك المفضلة لبدء الاستخدام:",
         reply_markup=reply_markup
     )
 
+# دالة التعامل مع ضغطات الأزرار
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
-    await query.answer()
+    await query.answer() # لإزالة علامة التحميل من الزر
     
-    # رسالة مؤقتة عند الضغط على الزر
+    # تغيير نص الرسالة عند الضغط على أي زر
     await query.edit_message_text(text="قريباً سيتم إضافة كافة المناسك والأدعية... جاري العمل على التحديث.")
 
+# الجزء المسؤول عن تشغيل البوت
 if __name__ == '__main__':
-    # بناء وتطوير التطبيق
+    # بناء التطبيق باستخدام التوكن
     application = ApplicationBuilder().token(TOKEN).build()
     
-    # إضافة الأوامر (Command Handlers)
+    # ربط الأوامر بالوظائف (لما يكتب /start ينفذ دالة start)
     application.add_handler(CommandHandler('start', start))
     
-    # إضافة مستجيب الأزرار (Callback Query Handler)
+    # ربط الأزرار بدالة button
     application.add_handler(CallbackQueryHandler(button))
     
-    print("Bot is running...")
-    # تشغيل البوت مع مسح التحديثات القديمة لتفادي التعليق
+    print("Bot is running...") # تظهر في سجلات Render لتؤكد أن البوت عمل
+    
+    # تشغيل البوت واستقبال الرسائل
     application.run_polling(drop_pending_updates=True)
