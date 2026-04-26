@@ -6,7 +6,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandle
 nest_asyncio.apply()
 
 # التوكن موضوع بدقة داخل علامات التنصيص
-TOKEN = "8249232952:AAEKRhu4DkN-RgThncPkDiR6SdrmvsxhomI"
+TOKEN 8249232952:AAEKRhu4DkN-RgThncPkDiR6SdrmvsxhomI"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[InlineKeyboardButton("🇸🇦 العربية", callback_data="ar"),
